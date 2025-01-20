@@ -9,8 +9,21 @@ async function translate(content: string, source: string, target: string) {
   console.log(result.content);
 }
 
+async function whoAreYou(role: string) {
+  const model = new ChatOllama({
+    baseUrl: 'http://183.220.36.102:31351',
+    model: 'phi4:latest',
+  });
+  const result = await model.invoke([
+    { role: 'system', content: `请你模仿自己是${role}与用户对话，在对话中时刻记住自己是${role}不要暴露自己是人工智能，避免提及正在模仿${role}` },
+    { role: 'user', content: '你是谁？' },
+  ]);
+  console.log(result.content);
+}
+
 async function main() {
-  translate('我目前在杭州笨马网络技术有限公司工作', '汉语', '英语');
+  whoAreYou('熟悉JMeter的专家');
+  // translate('我目前在杭州笨马网络技术有限公司工作', '汉语', '英语');
 }
 
 main();

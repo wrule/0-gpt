@@ -4,8 +4,8 @@ import docs from './docs';
 async function agentServe() {
   const model = new ChatOllama({
     baseUrl: 'http://183.220.36.102:31351',
-    model: 'phi4:latest',
-    numCtx: 16384,
+    model: 'deepseek-r1:14b',
+    numCtx: 50000,
     stop: ['<|im_start|>', '<|im_end|>', '<|im_sep|>'],
   });
   const result = await model.invoke([

@@ -1,7 +1,7 @@
 import { ChatOllama } from '@langchain/ollama';
 import docs from './docs';
 
-async function translate(content: string, source: string, target: string) {
+async function agentServe() {
   const model = new ChatOllama({
     baseUrl: 'http://183.220.36.102:31351',
     model: 'phi4:latest',
@@ -20,7 +20,7 @@ async function translate(content: string, source: string, target: string) {
 }
 
 async function main() {
-  const a = await translate('你是一个程序员吗？', '中文', '日文');
+  const a = await agentServe();
   console.log(a);
 }
 

@@ -6,7 +6,8 @@ async function agentServe() {
     baseUrl: 'http://183.220.36.102:31351',
     model: 'deepseek-r1:14b',
     numCtx: 50000,
-    stop: ['<|im_start|>', '<|im_end|>', '<|im_sep|>'],
+    // stop: ['<|im_start|>', '<|im_end|>', '<|im_sep|>'],
+    stop: ['<｜begin▁of▁sentence｜>', '<｜end▁of▁sentence｜>', '<｜User｜>', '<｜Assistant｜>'],
   });
   const result = await model.invoke([
     { role: 'system', content: 'XSea是一个性能测试平台' },

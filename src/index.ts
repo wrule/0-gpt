@@ -1,7 +1,10 @@
 import { ChatOllama } from '@langchain/ollama';
 import axios from 'axios';
 
-async function productPage(pageNum = 1, pageSize = 10, name = '') {
+async function productPage(params?: { name?: string, pageNum?: number, pageSize?: number }) {
+  const name = params?.name ?? '';
+  const pageNum = params?.pageNum ?? 1;
+  const pageSize = params?.pageSize ?? 10;
   const res = await axios.post('http://10.10.31.20:8081/api/xsea/workspace/list', {
     condition: { name }, pageNum, pageSize,
   }, {
@@ -28,7 +31,8 @@ async function test() {
 }
 
 async function main() {
-  test();
+  // test();
+  console.log(await productPage());
 }
 
 main();

@@ -1,8 +1,20 @@
 import { ChatOllama } from '@langchain/ollama';
+import axios from 'axios';
 import dayjs from 'dayjs';
 
-function timeNow() {
-  return dayjs().format('YYYY-MM-DD HH:mm:ss');
+async function productPage(pageNum = 1, pageSize = 10, name = '') {
+  const res = await axios.post('http://10.10.31.20:8081/api/xsea/workspace/list', {
+    condition: { name }, pageNum, pageSize,
+  }, {
+    headers: { Cookie: 'sys_token=d8cad0a8d0b04e9d8e6359aa20cafc42' },
+  });
+  const data = res.data.object ?? { };
+  return {
+    list: (data.list ?? []).map((item: any) => ({ name: item.name, id: item.id })),
+    total: data.total ?? 0,
+    pageNum: data.pageNum ?? 1,
+    pageSize: data.pageSize ?? 10,
+  };
 }
 
 async function test() {
@@ -17,7 +29,8 @@ async function test() {
 }
 
 async function main() {
-  await test();
+  console.log(await productPage(1, 10, '图图'));
+  // await test();
 }
 
 main();

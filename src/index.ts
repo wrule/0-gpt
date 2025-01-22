@@ -1,16 +1,23 @@
 import { ChatOllama } from '@langchain/ollama';
+import dayjs from 'dayjs';
 
-async function translate(content: string, source: string, target: string) {
+function timeNow() {
+  return dayjs().format('YYYY-MM-DD HH:mm:ss');
+}
+
+async function test() {
   const model = new ChatOllama({
     baseUrl: 'http://183.220.36.102:31351',
-    model: 'phi4:latest',
+    model: 'deepseek-r1:14b',
   });
-  const result = await model.invoke(["human", `请帮我把[${content}]这段文本由(${source})翻译成为(${target})，翻译后的文本放在[]之间`]);
+  const result = await model.invoke([
+    { role: 'user', content: '现在时间是什么？' },
+  ]);
   console.log(result.content);
 }
 
 async function main() {
-  const a = await translate('你是一个程序员吗？', '中文', '日文');
+  await test();
 }
 
 main();

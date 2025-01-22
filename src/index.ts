@@ -42,6 +42,8 @@ async function main() {
   const prompt = `${
     `User needs are: ${'给我图图的产品'}`
   }\n\n${
+    `Your task is: Generate a JSON parameter to call the paging API of the product list`
+  }\n\n${
     parser.getFormatInstructions().trim()
   }\n\n${
     'Be sure to only output the json object, avoid explaining the json structure, and avoid explaining other related content'

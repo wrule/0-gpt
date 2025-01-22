@@ -3,8 +3,8 @@ import axios from 'axios';
 import { StructuredOutputParser } from 'langchain/output_parsers';
 import { z } from 'zod';
 
-async function productPage(params?: { name?: string, pageNum?: number, pageSize?: number }) {
-  const name = params?.name ?? '';
+async function productPage(params?: { keyword?: string, pageNum?: number, pageSize?: number }) {
+  const name = params?.keyword ?? '';
   const pageNum = params?.pageNum ?? 1;
   const pageSize = params?.pageSize ?? 10;
   const res = await axios.post('http://10.10.31.20:8081/api/xsea/workspace/list', {
@@ -34,13 +34,20 @@ async function send(message: string) {
 
 async function main() {
   const zParams = z.object({
-    name: z.string().default('').describe('任意与产品相关的搜索关键字，你需要根据上下文选择合适的关键字填入'),
-    pageNum: z.number().default(1).describe('页码，具体页码你需要根据上下文决定'),
-    pageSize: z.number().default(10).describe('每页展示的产品个数，具体数值你需要根据上下文决定'),
+    keyword: z.string(),
+    pageNum: z.number(),
+    pageSize: z.number(),
   });
   const parser = StructuredOutputParser.fromZodSchema(zParams);
-  const prompt = `${'我想查看第一页的产品列表,每页展示多一些'}\n\n${parser.getFormatInstructions()}`.trim();
+  const prompt = `${
+    `User needs are: ${'给我图图的产品'}`
+  }\n\n${
+    parser.getFormatInstructions().trim()
+  }\n\n${
+    'Be sure to only output the json object, avoid explaining the json structure, and avoid explaining other related content'
+  }`.trim();
   const result = await send(prompt);
+  console.log(result);
   const params = await parser.parse(result);
   console.log(params);
 }

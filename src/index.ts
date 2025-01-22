@@ -1,6 +1,5 @@
 import { ChatOllama } from '@langchain/ollama';
 import axios from 'axios';
-import dayjs from 'dayjs';
 
 async function productPage(pageNum = 1, pageSize = 10, name = '') {
   const res = await axios.post('http://10.10.31.20:8081/api/xsea/workspace/list', {
@@ -23,14 +22,13 @@ async function test() {
     model: 'deepseek-r1:14b',
   });
   const result = await model.invoke([
-    { role: 'user', content: '现在时间是什么？' },
+    { role: 'user', content: '我想查看产品列表' },
   ]);
   console.log(result.content);
 }
 
 async function main() {
-  console.log(await productPage(1, 10, '图图'));
-  // await test();
+  test();
 }
 
 main();

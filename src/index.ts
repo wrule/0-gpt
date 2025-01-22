@@ -29,19 +29,20 @@ async function send(message: string) {
   const result = await model.invoke([
     { role: 'user', content: message },
   ]);
-  console.log(result.content);
+  return result.content as string;
 }
 
 async function main() {
-  // test();
   const zParams = z.object({
     name: z.string().default('').describe('任意与产品相关的搜索关键字，你需要根据上下文选择合适的关键字填入'),
     pageNum: z.number().default(1).describe('页码，具体页码你需要根据上下文决定'),
     pageSize: z.number().default(10).describe('每页展示的产品个数，具体数值你需要根据上下文决定'),
   });
   const parser = StructuredOutputParser.fromZodSchema(zParams);
-  const prompt = `${'我想查看名称包含"图图"的产品列表'}\n\n${parser.getFormatInstructions()}`.trim();
-  send(prompt);
+  const prompt = `${'我想查看第一页的产品列表,每页展示多一些'}\n\n${parser.getFormatInstructions()}`.trim();
+  const result = await send(prompt);
+  const params = await parser.parse(result);
+  console.log(params);
 }
 
 main();

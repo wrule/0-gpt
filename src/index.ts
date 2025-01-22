@@ -1,5 +1,7 @@
 import { ChatOllama } from '@langchain/ollama';
 import axios from 'axios';
+import { StructuredOutputParser } from 'langchain/output_parsers';
+import { z } from 'zod';
 
 async function productPage(params?: { name?: string, pageNum?: number, pageSize?: number }) {
   const name = params?.name ?? '';
@@ -19,20 +21,27 @@ async function productPage(params?: { name?: string, pageNum?: number, pageSize?
   };
 }
 
-async function test() {
+async function send(message: string) {
   const model = new ChatOllama({
     baseUrl: 'http://183.220.36.102:31351',
-    model: 'deepseek-r1:14b',
+    model: 'phi4:latest',
   });
   const result = await model.invoke([
-    { role: 'user', content: '我想查看产品列表' },
+    { role: 'user', content: message },
   ]);
   console.log(result.content);
 }
 
 async function main() {
   // test();
-  console.log(await productPage());
+  const zParams = z.object({
+    name: z.string().default('').describe('任意与产品相关的搜索关键字，你需要根据上下文选择合适的关键字填入'),
+    pageNum: z.number().default(1).describe('页码，具体页码你需要根据上下文决定'),
+    pageSize: z.number().default(10).describe('每页展示的产品个数，具体数值你需要根据上下文决定'),
+  });
+  const parser = StructuredOutputParser.fromZodSchema(zParams);
+  const prompt = `${'我想查看名称包含"图图"的产品列表'}\n\n${parser.getFormatInstructions()}`.trim();
+  send(prompt);
 }
 
 main();

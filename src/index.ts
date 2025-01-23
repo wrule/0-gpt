@@ -34,54 +34,13 @@ async function send(message: string) {
 
 async function main() {
   const zParams = z.object({
-    keyword: z.string(),
-    pageNum: z.number(),
-    pageSize: z.number(),
+    keyword: z.string().describe(``),
+    pageNum: z.number().describe(``),
+    pageSize: z.number().describe(``),
   });
   const parser = StructuredOutputParser.fromZodSchema(zParams);
   const prompt = `${
-    `User needs are: ${'我想查找所有用于测试的产品，看第二页'}`
-  }\n\n${
-    `Extract the core subject as a 'keyword' parameter for API queries or search operations.
-
-✓ Correct Extractions (Query → keyword):
-"I need to check products from 2015" → keyword="2015"
-"Show me Tom's academic performance" → keyword="Tom"
-"Find information about the solar system" → keyword="solar system"
-"What are frontend developer responsibilities" → keyword="frontend"
-"MacBook Pro price comparison" → keyword="MacBook Pro"
-"我需要查看春节的活动" → keyword="春节"
-"帮我找一下王小明的联系方式" → keyword="王小明"
-
-✗ Incorrect Parameter Assignments:
-"I need to check products from 2015":
-  ✗ keyword="2015 products"
-  ✗ keywords=["2015", "products"]
-  ✗ params={"year": "2015", "type": "products"}
-
-"Find information about the solar system":
-  ✗ keyword="solar system information"
-  ✗ search_term="about solar system"
-  ✗ query="find solar system"
-
-Core Extraction Rules:
-1. Extract ONLY the essential subject as a single keyword value
-2. Remove ALL auxiliary elements:
-   - Action verbs (check, find, learn, 查看, 搜索)
-   - Descriptive modifiers (today's, about, 关于, 怎样)
-   - Connective words (of, for, in, 的, 和)
-   - Purpose indicators (price, method, 价格, 方法)
-   - Personal pronouns (I, me, 我, 他)
-3. The extracted keyword should be:
-   - A single string value
-   - Used directly as the keyword parameter
-   - Free from any surrounding modifiers
-   - Ready for API query: api.search(keyword="extracted_term")
-
-Example Implementation:
-query = "I need to check products from 2015"
-extracted_keyword = "2015"
-api.search(keyword=extracted_keyword)`
+    `User needs are: ${'我想查看产品'}`
   }\n\n${
     parser.getFormatInstructions().trim()
   }\n\n${
@@ -89,9 +48,6 @@ api.search(keyword=extracted_keyword)`
   }`.trim();
   const result = await send(prompt);
   console.log(result);
-  const params = await parser.parse(result);
-  const a = await productPage(params);
-  console.log(a);
 }
 
 main();
